@@ -213,5 +213,43 @@ public class FirewallManager {
     // } catch (IOException | InterruptedException e) {
     // e.printStackTrace();
     // }
-
+    public void deleteRule(String ruleName) throws IllegalArgumentException {
+        // Check if a rule with the specified name exists
+        FirewallRule existingRule = dao.getRule(ruleName);
+        if (existingRule == null) {
+            throw new IllegalArgumentException("No existe una regla con este nombre.");
+        }
+    
+        // Build the firewall command to delete the rule
+        String command = String.format("netsh advfirewall firewall delete rule name=\"%s\"", ruleName);
+        System.out.println("Executing command: " + command);
+    
+        // Execute the command to delete the rule
+        Process process = null;
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
+            process = processBuilder.start();
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new IOException("Error al ejecutar el comando para eliminar la regla del firewall.");
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al ejecutar el comando para eliminar la regla del firewall.", e);
+        } finally {
+            // Close the process if it's not null
+            if (process != null) {
+                process.destroy();
+            }
+        }
+    
+        // Delete the rule from the database
+        try {
+            dao.deleteRule(ruleName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al eliminar la regla de la base de datos.", e);
+        }
+    }
+    
 }

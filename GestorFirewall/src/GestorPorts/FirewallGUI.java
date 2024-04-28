@@ -126,12 +126,25 @@ public class FirewallGUI {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Implement rule deletion logic
-                    // Add entry to history
+                    // Obtener el nombre de la regla seleccionada
+                    String ruleName = (String) tableModel.getValueAt(selectedRow, 0);
+        
+                    // Eliminar la regla del gestor de firewall
+                    try {
+                        manager.deleteRule(ruleName);
+                        // Eliminar la fila correspondiente de la tabla
+                        tableModel.removeRow(selectedRow);
+                        System.out.println("Rule deleted successfully");
+                        // Agregar una entrada al historial (opcional)
+                        // addEntryToHistory("Rule deleted: " + ruleName);
+                    } catch (Exception ex) {
+                        // Manejar la excepción adecuadamente para tu aplicación
+                        System.out.println("Error deleting rule: " + ex.getMessage());
+                    }
                 }
             }
         });
-
+        
         // Load rules from database
         List<FirewallRule> rules = manager.getAllRules();
         for (FirewallRule rule : rules) {
