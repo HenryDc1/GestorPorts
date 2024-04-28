@@ -5,6 +5,13 @@
             "type": "java",
             "name": "App",
             "request": "launch",
+            "mainClass": "GestorFirewall/GestorPorts.App",
+            "projectName": "GestorFirewall"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
             "mainClass": "App",
             "projectName": "GestorPorts_6ffa0618"
         },
